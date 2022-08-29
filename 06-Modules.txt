@@ -1,0 +1,59 @@
+When we want to call a module in commandline after ansible command we use -m
+
+Target come before module
+
+Example: 
+$ ansible centos -m ping 
+
+1) Setup module
+This module is called by default by playbooks
+It fills variables across ansible
+
+$ ansible centos -m setup
+
+2) File module
+
+In the command bellow we create an empty file named ansibleForDevOps
+$ ansible all -m file -a 'path=/tmp/ansibleForDevOps state=touch'
+
+We also can change mode of the file
+$ ansible all -m file -a 'path=/tmp/ansibleForDevOps state=touch mode=600'
+
+If we want to keep already changed files unmodified
+$ ansible all -m file -a 'path=/tmp/ansibleForDevOps state=file mode=600'
+
+Yellow color is for changed status which was successful (CHANGED)
+Green color is for unchanged status which was successful (SUCCEED)
+Red color is for unsuccessful status (FAILED)
+Pink color is for Warnings (WARNING)
+
+See the documentations of file module for more info
+
+3) Copy module
+
+Copy a file from controller or remote server to a remote server
+
+For copying from controller to remote servers
+$ ansilbe all -m copy -a 'src=/tmp/ansibleForDevOps dest=/tmp/ansible.txt'
+
+For copying from remote server to remote server
+$ ansible ubuntu-c -m copy -a 'remote_src=yes src=/tmp/ansible.txt dest=/tmp/ansible'
+
+See the documentations of copy module for more info
+
+4) Command module
+
+For executing a command on remote server
+
+$ ansible all -m command -a 'id' -o
+
+$ ansible centos -m command -a 'uanme -r' -o
+
+Command module is the default module that if -m is not provided it will be replaced
+
+$ ansible all 'touch /tmp/command_module creates=/tmp/command_module'
+$ ansible all 'rm /tmp/command_module removes=/tmp/command_module'
+
+5) Ansible Docs
+
+$ ansible-doc copy

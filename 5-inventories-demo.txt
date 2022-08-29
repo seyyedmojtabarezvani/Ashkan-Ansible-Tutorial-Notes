@@ -1,0 +1,116 @@
+$ cd 01_01_Ansible_Inventories
+$ cd 01
+
+To run the first version:
+$ ansible all -m ping 
+Pings will fail (Unreachable)
+
+To fix the problem we go to next version:
+$ cd ../02
+In this version in hosts you can see that ansible_user=root added to centos because the
+keys already has been added to hosts
+Let's ping the centos ones
+$ ansible centos -m ping -o
+Pings are successful
+However for Ubuntus it is not gonna work
+First solution is to:
+$ ansible ubuntu1 -m ping -o -e ansible_user=root
+Or for password (Imagine password has already been set on the server):
+$ ansible ubuntu1 -m ping -o -e ansible_password=password
+
+Now let's go to next version:
+$ cd ../03
+in hosts you can see that proper variable of each host is defined next to it
+Now:
+$ ansible all -m ping
+
+Let's go to next version:
+$ cd ../04
+We can tell ansible that after ssh to a host, it becomes a sudoer via ansible_become variable
+As you can see in hosts:
+ubuntu1 ansible_password=password ansible_become=true
+Another useful variable is ansible_become_pass to give the password it needs to become sudo
+
+Let's go to next version:
+$ cd ../05
+We can see that we can give proper ranges to hosts:
+ubuntu[1:3] ansible_password=password ansible_become=true
+$ ansible centos -m ping -o
+Another good variable is ansible_port that defines ssh port other than default 22 port
+For example:
+centos1 ansible_user=root ansible_port=2222
+
+Next version:
+$ cd ../06
+We can see that we can define variables of specific host seperately:
+[ubuntu]
+ubuntu[1:3]
+
+[ubuntu:vars]
+ansible_password=password ansible_become=true
+
+$ ansible all -m ping -o 
+The above config has problem because in variable group definitions each variable must be
+on a seperate line
+[ubuntu]
+ubuntu[1:3]
+
+[ubuntu:vars]
+ansible_password=password
+ansible_become=true
+
+$ ansible all -m ping -o 
+It's ok Now
+
+Next version:
+$ cd ../07
+In previous parts we have seen that we had one group named ubuntu and one group named centos
+We can group these together as children of a new group calls linux for example:
+
+[linux:children]
+centos
+ubuntu
+
+Now:
+$ ansible linux -m ping -o
+
+Good!
+
+Next version:
+$ cd ../08
+In this version it is demostrated that you can have a variable for every host like this:
+
+[all:vars]
+ansible_port=22
+
+$ ansible all -m ping -o
+
+Next version:
+$ cd ../09
+$ ansible all -m ping -o
+
+Next version:
+$ cd ../10
+Inventories can have yaml format as well is ini
+
+As you can check in ansible.cfg
+inventory = hosts.yml
+So it reads from hosts.yml
+
+$ ansible ubuntu -m ping -o
+
+Let's go the next version:
+$ cd ../11
+As you can see we can use Inventories with json format also
+You can see that in ansible.cfg inventory is set to be hosts.json
+$ ansible cenos -m ping -o
+
+Next version:
+$ cd ../12
+Sometimes you need to provide your inventory file as a parameter to command line ansible
+$ ansible control -i hosts.yml -m ping -o
+
+You can consult on ansible documentations
+How to build your inventory
+
+Nice!

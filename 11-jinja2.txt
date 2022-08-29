@@ -1,0 +1,429 @@
+$ cd revisions/01_07_Jinja2
+
+Jinja2 is a complete templating language
+
+First version:
+$ cd 01
+$ cat jinja2_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: where our play will run and options it will run with
+    hosts: all
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    tasks:
+        - name: Ansible Jinja2 if
+          debug:
+            msg: >
+                --== Ansible Jinja2 if statement ==--
+                {# If the hostname is ubuntu-c, include a message -#}
+                {% if ansible_hostname == "ubuntu-c" -%}
+                    This is ubuntu-c
+                {% endif %}
+
+# Three dots indicate the end of a YAML document
+...
+
+{# -#} is a comment in Jinja2
+
+{% if -%} is the start of if statement
+
+{% endif %} is the end of if statement
+
+Now let's run:
+$ ansible-playbook jinja2_playbook.yaml
+
+Next version:
+$ cd ../02
+$ cat jinja2_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: where our play will run and options it will run with
+    hosts: all
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    tasks:
+        - name: Ansible Jinja2 if elif
+          debug:
+            msg: >
+                --== Ansible Jinja2 elif statement ==--
+                {% if ansible_hostname == "ubuntu-c" -%}
+                    This is ubuntu-c
+                {% elif ansible_hostname == "centos1" -%}
+                    This is centos1 with its modified SSH port
+                {% endif %}
+
+# Three dots indicate the end of a YAML document
+...
+
+$ ansible-playbook jinja2_playbook.yaml
+
+Next version:
+$ cd ../03
+$ cat jinja2_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: where our play will run and options it will run with
+    hosts: all
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    tasks:
+        - name: Ansible Jinja2 if elif else
+          debug:
+            msg: >
+                --== Ansible Jinja2 if elif else statement ==--
+                {% if ansible_hostname == "ubuntu-c" -%}
+                    This is ubuntu-c
+                {% elif ansible_hostname == "centos1" -%}
+                    This is centos1 with its modified SSH port
+                {% else -%}
+                    This is good old {{ ansible_hostname }}
+                {% endif %}
+
+# Three dots indicate the end of a YAML document
+...
+
+$ ansible-playbook jinja2_playbook.yaml
+
+Next version:
+$ cd ../04
+$ cat jinja2_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: where our play will run and options it will run with
+    hosts: all
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    tasks:
+        - name: Ansible Jinja2 if variable is defined (Where variable is not defined)
+          debug:
+            msg: >
+                --== Ansible Jinja2 if variable is defined (Where variable is not defined) ==--
+                {% if example_variable is defined -%}
+                    example_variable is defined
+                {% else -%}
+                    example_variable is not defined
+                {% endif %}
+
+# Three dots indicate the end of a YAML document
+...
+
+$ ansible-playbook jinja2_playbook.yaml
+
+Next version:
+$ cd ../05
+$ cat jinja2_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: where our play will run and options it will run with
+    hosts: all
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    tasks:
+        - name: Ansible Jinja2 if variable is defined (Where variable is not defined)
+          debug:
+            msg: >
+                --== Ansible Jinja2 if variable is defined (Where variable is not defined) ==--
+
+                {% set example_variable = 'defined' -%}
+                {% if example_variable is defined -%}
+                    example_variable is defined
+                {% else -%}
+                    example_variable is not defined
+                {% endif %}
+
+# Three dots indicate the end of a YAML document
+...
+
+$ ansible-playbook jinja2_playbook.yaml
+
+Next version:
+$ cd ../06
+$ cat jinja2_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: where our play will run and options it will run with
+    hosts: all
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    tasks:
+        - name: Ansible Jinja2 for statement
+          debug:
+            msg: >
+                --== Ansible Jinja2 for statement ==--
+
+                {% for entry ansible_all_ipv4_addresses -%}
+                    IP Address entry {{ loop.index }} = {{ entry }}
+                {% endfor %}
+
+# Three dots indicate the end of a YAML document
+...
+
+$ ansible-playbook jinja2_playbook.yaml
+
+Next version:
+$ cd ../07
+$ cat jinja2_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: where our play will run and options it will run with
+    hosts: all
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    tasks:
+        - name: Ansible Jinja2 for range
+          debug:
+            msg: >
+                --== Ansible Jinja2 for range ==--
+
+                {% for entry in range(1, 11) -%}
+                    {{ entry }}
+                {% endfor %}
+
+# Three dots indicate the end of a YAML document
+...
+
+range(1, 11) means from 1 to 10 and 11 is not included
+
+$ ansible-playbook jinja2_playbook.yaml
+
+Next version:
+$ cd ../08
+$ cat jinja2_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: where our play will run and options it will run with
+    hosts: all
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    tasks:
+        - name: Ansible Jinja2 for range, reversed (simulate while greater than 5)
+          debug:
+            msg: >
+                --== Ansible Jinja2 for range, reversed (simulate while greater than 5) ==--
+
+                {% for entry in range(10, 0, -1) -%}
+                    {% if entry == 5 -%}
+                        {% break %}
+                    {% endif %}
+                    {{ entry }}
+                {% endfor %}
+
+# Three dots indicate the end of a YAML document
+...
+
+break and continue are not in ansible by default
+So we have to modify ansible.cfg
+$ vi ansible.cfg
+
+jinja2_extensions=jinja2.ext.loopcontrols
+
+$ ansible-playbook jinja2_playbook.yaml
+
+Next version:
+$ cd ../09
+$ cat jinja2_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: where our play will run and options it will run with
+    hosts: all
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    tasks:
+        - name: Ansible Jinja2 for range, reversed (continue if odd)
+          debug:
+            msg: >
+                --== Ansible Jinja2 for range, reversed (continue if odd) ==--
+
+                {% for entry in range(10, 0, -1) -%}
+                    {% if entry is odd -%}
+                        {% continue %}
+                    {% endif %}
+                    {{ entry }}
+                {% endfor %}
+
+# Three dots indicate the end of a YAML document
+...
+
+$ ansible-playbook jinja2_playbook.yaml
+
+Next version:
+$ cd ../10
+$ cat jinja2_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: where our play will run and options it will run with
+    hosts: all
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    tasks:
+        - name: Ansible Jinja2 filters
+          debug:
+            msg: >
+                --== Ansible Jinja2 filters ==--
+
+                --== min [1, 2, 3, 4, 5] ==--
+
+                {{ [1, 2, 3, 4, 5] | min }}
+
+                --== max [1, 2, 3, 4, 5] ==--
+
+                {{ [1, 2, 3, 4, 5] | max }}
+
+                --== unique [1, 1, 2, 2, 3, 3, 4, 4, 5, 5] ==--
+
+                {{ [1, 1, 2, 2, 3, 3, 4, 4, 5, 5] | unique }}
+
+                --== difference [1, 2, 3, 4, 5] vs [2, 3, 4] ==--
+
+                {{ [1, 2, 3, 4, 5] | difference([2, 3, 4]) }}
+
+                --== random ['rob', 'jane', 'freddy'] ==--
+
+                {{ ['rob', 'jane', 'freddy'] | random }}
+
+                --== urlsplit hostname ==--
+
+                {{ "http://docs.ansible.com/ansible/latest/playbooks_filters.html" | urlsplit('hostname') }}
+
+# Three dots indicate the end of a YAML document
+...
+
+pipe (|) is for filter
+
+$ ansible-playbook jinja2_playbook.yaml
+
+Next version:
+$ cd ../11
+
+Templating
+
+$ cat jinja2_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: where our play will run and options it will run with
+    hosts: all
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    tasks:
+        - name: Jinja2 template
+          template:
+            src: template.j2
+            dest: "/tmp/{{ ansible_hostname }}_template.out"
+            trim_blocks: true
+
+# Three dots indicate the end of a YAML document
+...
+
+Template can be located inside current directory
+
+Output will be saved in /tmp/{{ ansible_hostname }}_template.out
+
+$ cat template.j2
+
+--== Ansible Jinja2 filters ==--
+
+--== min [1, 2, 3, 4, 5] ==--
+
+{{ [1, 2, 3, 4, 5] | min }}
+
+--== max [1, 2, 3, 4, 5] ==--
+
+{{ [1, 2, 3, 4, 5] | max }}
+
+--== unique [1, 1, 2, 2, 3, 3, 4, 4, 5, 5] ==--
+
+{{ [1, 1, 2, 2, 3, 3, 4, 4, 5, 5] | unique }}
+
+--== difference [1, 2, 3, 4, 5] vs [2, 3, 4] ==--
+
+{{ [1, 2, 3, 4, 5] | difference([2, 3, 4]) }}
+
+--== random ['rob', 'jane', 'freddy'] ==--
+
+{{ ['rob', 'jane', 'freddy'] | random }}
+
+--== urlsplit hostname ==--
+
+{{ "http://docs.ansible.com/ansible/latest/playbooks_filters.html" | urlsplit('hostname') }}
+
+$ ansible-playbook jinja2_playbook.yaml
+
+Nice!

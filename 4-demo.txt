@@ -1,0 +1,45 @@
+Check if pip has been installed
+$ pip --version
+
+To install virtualenv
+$ pip install virtualenv
+
+Name virtualenv to venv
+$ virtualenv venv
+
+Then activate virtual environment
+$ source venv/bin/activate
+
+To see what modules have you installed
+$ pip freeze
+
+To see ansible version
+$ ansible --version
+
+There is other forth way to give configuration file (The most powerful)
+$ mkdir /tmp/ansible
+$ cp .ansible.cfg /tmp/ansible/ansible.cfg
+$ export ANSIBLE_CONFIG=/tmp/ansible/ansible.cfg
+If there is no other ansible config then ansible looks at ANSIBLE_CONFIG global variable
+$ ansible --version
+You can unset it also
+$ unset ANSIBLE_CONFIG
+
+You can also copy .ansible.cfg to home directory
+$ cp .ansible.cfg ~/
+
+The best way is to config it in the current directory
+
+There is a git repository
+git@github.com:ashkankamyab/Ansible-Tutorial.git
+
+To run first ansible 
+Go to Ansible-Tutorial -> revisions -> 00
+$ ansible-playbook -i hosts setup.yaml
+
+Then add public key to ubuntu-c (Ubuntu controller)
+Then clone the github repo to ubuntu-c
+Install virtualenv
+Install ansible
+
+Vallah!

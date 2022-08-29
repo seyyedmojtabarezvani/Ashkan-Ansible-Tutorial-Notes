@@ -1,0 +1,135 @@
+Galera: Open-source distributed solution for Mysql
+Percona: Open-source/paid distributed solution for Mysql
+
+Let's go to the first version:
+
+$ cd 01
+$ cat hosts
+
+[nodes]
+gdb01 ansible_host=192.168.122.11 ansible_port=22 ansible_user=root
+gdb02 ansible_host=192.168.122.12 ansible_port=22 ansible_user=root
+
+[garbd]
+gqd01 ansible_host=192.168.122.13 ansible_port=22 ansible_user=root
+
+[galera:children]
+nodes
+garbd
+
+[all:children]
+galera
+
+$ cat ansible.cfg
+
+[defaults]
+inventory=hosts
+nocows=1
+host_key_checking=false
+Interpreter_python=/usr/bin/python3
+log_path=./ansible_log
+library=./lib
+vault_password_file=.vault_password
+
+[ssh_connection]
+control_path=~/.ssh/ansible-ssh-%%h-%%p-%%r
+ssh_args=-oUserKnowHostsFile=/dev/null -oStrictHostKeyChecking=no
+
+[privilege_escalation]
+
+
+$ cat bootstrap.yaml
+
+---
+- hosts: all
+  become: true
+  gather_facts: true
+  vars:
+    - ansible_python_interpreter: /usr/bin/python
+    - ansible_user: root
+  tasks:
+  - name: Set Hostname
+    hostname:
+        name: "{{ inventory_hostname_short }}"
+
+  - name: Required System Packages Redhat
+    shell: |
+        yum update -yq --skip-broken
+        yum install -yq gcc openssl-devel wget expect rsync vim
+        yum install -yq python3-pip python3-wheel libselinux-python3 policycoreutils-python
+
+  - name: Ensure group "admin" exists
+    group:
+        name: admin
+        state: present
+  
+  - name: Add the user 'ansible'
+    user: 
+        name: ansible
+        shell: /bin/bash
+        uid: 1999
+        generate_ssh_key: yes
+        ssh_key_bits: 2048
+        ssh_key_files: .ssh/id_rsa
+        comment: "Ansible user for Ansible Controller"
+
+  - name: Passwordless sudo for Admins
+    blockinfile:
+        path: /etc/sudoers
+        state: present
+        block: "%admin ALL=(ALL) NOPASSWD: ALL"
+        validate: /usr/sbin/visudo -cf %s
+  
+  - name: Set authorized key taken from file
+    ansible.posix.authorized_key:
+        user: ansible
+        state: present
+        key: "{{ lookup('file', '/home/seyyed/.ssh/id_rsa.pub') }}"
+...
+
+To validate the yaml file:
+$ ansible-playbook bootstrap.yaml --check
+
+Now let's run bootstrap.yaml
+$ ansible-playbook bootstrap.yaml
+
+Next version:
+$ cd ../02
+$ ansible-playbook bootstrap.yaml
+
+Roles in ansible are like modular development in programming
+
+Let's create a Role for Galera deployment
+
+$ cat deployment.yaml
+
+---
+- hosts: galera
+  become: true
+  gather_facts: true
+  tasks:
+  - name Ensure Selinux is enabled and set to permissive
+    selinux:
+        policy: targeted
+        state: permissive
+  
+  - name: Set selinux to permissive
+    lineinfile:
+        path: /etc/selinux/config
+        regexp: '^SELINUX='
+        line: SELINUX=permissive
+    when: "ansible_facts['os_family'] == 'RedHat'"
+
+  - name: Include the Galera packages role
+    include_role:
+        name: galera
+
+...
+
+You can add roles with (For example):
+- name: MYSQL Secure Installation
+  import_tasks: initial_secure_mysql.yaml
+
+This note is not complete at all due to fast presentation of subjects!
+
+Nice!

@@ -1,0 +1,7 @@
+Configurations can be written in 3 different ways:
+1) Current directory (has the most priority)
+./ansible.cfg
+2) Home or ~ directory
+~/.ansible.cfg
+3) System file configurations
+/etc/ansible/ansible.cfg

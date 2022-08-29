@@ -1,0 +1,265 @@
+Let's go to revisions:
+$ cd revisions/01_04_playbooks_introduction/
+
+Let's go to the first version:
+$ cd 01
+This is a pattern for playbooks
+
+---
+# YAML documents begin with document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+- 
+
+    # Target: where our play will run and options it will run with
+    
+    # Variable: variables that will apply to the play, on all target systems
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+
+    # Handlers: handlers that are executed as a notify key from a task
+
+    # Roles: list of roles to be imported into the play
+
+# Three dots indicate the end of YAML document
+...
+
+Next version:
+$ cd ../02
+
+in ansible.cfg file if nocow = True will be omitted then information will be shown as cow say
+
+In motd_playbook.yaml
+
+---
+# YAML documents begin with document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+- 
+
+    # Target: where our play will run and options it will run with
+    hosts: centos
+    user: root
+    
+    # Variable: variables that will apply to the play, on all target systems
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    task:
+        - name: Configure a MOTD (Message of the day)
+          copy:
+            src: centos_motd
+            dest: /etc/motd
+
+    # Handlers: handlers that are executed as a notify key from a task
+
+    # Roles: list of roles to be imported into the play
+
+# Three dots indicate the end of YAML document
+...
+
+To run the abovementioned playbook:
+$ ansible-playbook motd_playbook.yaml
+
+Let's go to next version:
+$ cd ../03
+$ cat motd_playbook.yaml
+
+---
+# YAML documents begin with document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+- 
+
+    # Target: where our play will run and options it will run with
+    hosts: centos
+    user: root
+    gather_facts: false
+    
+    # Variable: variables that will apply to the play, on all target systems
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    task:
+        - name: Configure a MOTD (Message of the day)
+          copy:
+            src: centos_motd
+            dest: /etc/motd
+
+    # Handlers: handlers that are executed as a notify key from a task
+
+    # Roles: list of roles to be imported into the play
+
+# Three dots indicate the end of YAML document
+...
+
+To run playbook:
+$ ansible-playbook motd_playbook.yaml
+
+Gather fact won't run
+
+Next version:
+$ cd ../04
+
+---
+# YAML documents begin with document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+- 
+
+    # Target: where our play will run and options it will run with
+    hosts: centos
+    user: root
+    gather_facts: false
+    
+    # Variable: variables that will apply to the play, on all target systems
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    task:
+        - name: Configure a MOTD (Message of the day)
+          copy:
+            content: "Welcome to CentOS Linux - Ansible Rocks\n"
+            dest: /etc/motd
+
+    # Handlers: handlers that are executed as a notify key from a task
+
+    # Roles: list of roles to be imported into the play
+
+# Three dots indicate the end of YAML document
+...
+
+$ ansible-playbook motd_playbook.yaml
+
+Next version:
+$ cd ../05
+$ cat motd_playbook.yaml
+
+---
+# YAML documents begin with document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+- 
+
+    # Target: where our play will run and options it will run with
+    hosts: centos
+    user: root
+    gather_facts: false
+    
+    # Variable: variables that will apply to the play, on all target systems
+    vars:
+        motd: "Welcome to CentOS Linux - Ansible Rocks\n"
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    task:
+        - name: Configure a MOTD (Message of the day)
+          copy:
+            content: "{{ motd }}"
+            dest: /etc/motd
+
+    # Handlers: handlers that are executed as a notify key from a task
+
+    # Roles: list of roles to be imported into the play
+
+# Three dots indicate the end of YAML document
+...
+
+$ ansible-playbook motd_playbook.yaml
+
+Next version:
+$ cd ../06
+$ cat motd_playbook.yaml
+
+---
+# YAML documents begin with document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+- 
+
+    # Target: where our play will run and options it will run with
+    hosts: centos
+    user: root
+    gather_facts: false
+    
+    # Variable: variables that will apply to the play, on all target systems
+    vars:
+        motd: "Welcome to CentOS Linux - Ansible Rocks\n"
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    task:
+        - name: Configure a MOTD (Message of the day)
+          copy:
+            content: "{{ motd }}"
+            dest: /etc/motd
+          notify: MOTD changed
+
+    # Handlers: handlers that are executed as a notify key from a task
+    handlers:
+        - name: MOTD changed
+          debug:
+            msg: The MOTD was changed
+
+    # Roles: list of roles to be imported into the play
+
+# Three dots indicate the end of YAML document
+...
+
+$ ansible-playbook motd_playbook.yaml
+
+Next version:
+$ cd ../07
+$ cat motd_playbook.yaml
+
+---
+# YAML documents begin with document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+- 
+
+    # Target: where our play will run and options it will run with
+    hosts: linux
+    
+    # Variable: variables that will apply to the play, on all target systems
+    vars:
+        motd_centos: "Welcome to CentOS Linux - Ansible Rocks\n"
+        motd_ubuntu: "Welcome to Ubuntu Linux - Ansible Rocks\n"
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    task:
+        - name: Configure a MOTD (Message of the day)
+          copy:
+            content: "{{ motd_centos }}"
+            dest: /etc/motd
+          notify: MOTD changed
+          when: ansible_distribution == "CentOS"
+
+        - name: Configure a MOTD (Message of the day)
+          copy:
+            content: "{{ motd_ubuntu }}"
+            dest: /etc/motd
+          notify: MOTD changed
+          when: ansible_distribution == "Ubuntu"
+
+    # Handlers: handlers that are executed as a notify key from a task
+    handlers:
+        - name: MOTD changed
+          debug:
+            msg: The MOTD was changed
+
+    # Roles: list of roles to be imported into the play
+
+# Three dots indicate the end of YAML document
+...
+
+$ ansible-playbook motd_playbook.yaml

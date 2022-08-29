@@ -1,0 +1,232 @@
+Yaml - Yaml ain't Markup Language
+
+Go to first version:
+$ cd 01_03_yaml/01
+
+function yamlpy() {
+    python -c 'import sys,yaml,pprint;pprint.pprint(yaml.load(open(sys.argv[1]).read(), Loader=yaml.FullLoader))' $1
+}
+
+put yamlpy into bashrc
+
+Every YAML file should start with three dashes
+---
+
+Every YAML file should end with three dots
+...
+
+# is for comments 
+
+Next version:
+$ cd ../02
+
+key_1: first value
+
+Next version:
+$ cd ../03
+
+Strings can be defined in three ways:
+no_quotes: This is a string without quotes
+single_quotes: 'This is a string Example'
+double_quotes: "This is a string Example"
+
+Next version:
+$ cd ../04
+
+no_quotes: This is a string without quotes\n
+single_quotes: 'This is a string Example\n'
+double_quotes: "This is a string Example\n"
+
+Special characters are only working inside double quotes
+
+Next version:
+$ cd ../05
+
+pipe (|) creates a multiline string 
+
+key_1: |
+    this is a string
+    that goes over
+    multiple lines
+
+Next version:
+$ cd ../06
+
+Greater than (>) interprets all the multi lines into one line but puts special character at
+the end
+
+example_key_1: >
+    This is a string
+    that goes over
+    mutliple lines
+
+Next version:
+$ cd ../07
+
+Greater than dash (>-) interprets all the multi lines into one line without any special
+characters
+
+example_key_1: >-
+    This is a string
+    that goes over
+    mutliple lines
+
+Next version:
+$ cd ../08
+
+Integer dictionary is also possible
+
+example_integer: 1
+
+Next version:
+$ cd ../09
+
+Integer defined as string
+
+example_integer: "1"
+
+Next version:
+$ cd ../10
+
+is_false_01: false
+is_false_02: False
+is_false_03: FALSE
+is_false_04: no
+is_false_05: No
+is_false_06: NO
+is_false_07: off
+is_false_08: Off
+is_false_09: OFF
+is_false_10: n (Risky may not work in later versions)
+is_true_01: true
+is_true_02: True
+is_true_03: TRUE
+is_true_04: yes
+is_true_05: Yes
+is_true_06: YES
+is_true_07: on
+is_true_08: On
+is_true_09: ON
+is_true_10: y (Risky may not work in later versions)
+
+Next version:
+$ cd ../11
+
+Items
+
+-item 1
+-item 2
+-item 3
+-item 4
+-item 5
+
+Next version:
+$ cd ../12
+
+You can assing a variable to another one
+
+example_key_1: example_value_1
+example_key_2: example_value_2
+
+Next version:
+$ cd ../13
+
+Inline dictionary
+
+{example_key_1: example_value_1, example_key_2: example_value_2}
+
+Next version:
+$ cd ../14
+
+Inline list
+
+[example_list_entry_1, example_list_entry_2]
+
+Next version:
+$ cd ../15
+
+example_key_1: example_value_1
+- item 1
+
+This is wrong
+
+Next version:
+$ cd ../16
+
+{example_key_1: example_value_1, example_key_2: example_value_2}
+[example_list_entry_1, example_list_entry_2]
+
+This also is wrong
+
+Next version:
+$ cd ../17
+
+example_key_1:
+    - list item 1
+    - list item 2
+
+example_key_2:
+    - list item 3
+    - list item 4
+
+Next version:
+$ cd ../18
+
+List of lists
+
+- example_1
+    - item_1
+    - item_2
+    - item_3
+
+- example_2
+    - item_4
+    - item_5
+    - item_6
+
+Next version:
+$ cd ../19
+
+A dictionary that contains a list and each list contains list
+
+example_dictionary_1:
+    - example_dictionary_2:
+        - 1
+        - 2
+        - 3
+    - example_dictionary_3:
+        - 4
+        - 5
+        - 6
+    - example_dictionary_4:
+        - 7
+        - 8
+        - 9
+
+Next version:
+$ cd ../20
+
+- Clint Eastwood
+- Quintin Tarantino
+- Martin Scorsese
+- Mohsen Makhmalbaf
+
+Next version:
+$ cd ../21
+
+- Clint Eastwood
+    Born: 1930
+    Best Movie: Million Dollar Baby
+- Quintin Tarantino
+    Born: 1963
+    Best Movie: Pulp Fiction
+- Martin Scorsese
+    Born: 1942
+    Best Movie: Casino
+- Mohsen Makhmalbaf
+    Born: 1957
+    Best Movie: Sex & Philosophy
+
+Next version:
+$ cd ../22
+

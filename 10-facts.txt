@@ -1,0 +1,228 @@
+$ cd revisions/01_06_playbooks_facts
+
+First version:
+$ cd 01
+
+First thing is to call setup module
+$ ansible centos1 -m setup
+Every dictionary under ansible_facts are accessible 
+There is nothing like ansible_facts
+But for example ansible_all_ipv4_addresses is accessible
+
+You can Create a subset
+$ ansible centos1 -m setup -a 'gather_subset=network'
+
+You can even filter more (! is for exclusion):
+$ ansible centos1 -m setup -a 'gather_subset=network,!all,!min'
+
+To see the difference in word count (number of line)
+$ ansible centos1 -m setup -a 'gather_subset=network' | wc -l (214 lines)
+$ ansible centos1 -m setup -a 'gather_subset=network,!all,!min' | wc -l (371 lines)
+
+There is another way to use filter to give us a specific fact
+$ ansible centos1 -m setup -a 'filter=ansible_memfree_mb'
+
+You can also use wildcard in filter
+$ ansible centos1 -m setup -a 'filter=ansible_mem*'
+
+Next version:
+$ cd ../02
+$ cat facts_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in yaml indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: where our play will run and options it will run with
+    hosts: all
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    tasks:
+        - name: Show IP Address
+          debug:
+            msg: "{{ ansible_default_ipv4.address }}"
+
+# Three dots indicate the end of a YAML document
+...
+
+$ ansible-playbook facts_playbook.yaml
+
+Next version:
+$ cd ../03
+
+Custom facts
+
+By default ansible is looking for a directory calls:
+/etc/ansible/facts.d
+
+Or it can be save in ~/facts.d
+
+$ cd templates
+$ cat getdate1.fact (JSON format)
+
+#!/bin/bash
+echo {\""date\"": \""`date`\""}
+
+$ cat getdate2.fact (INI format)
+
+#!/bin/bash
+echo [date]
+echo date=`date`
+
+Let's create facts.d directory:
+$ mkdir -p /etc/ansible/facts.d
+
+$ sudo cp templates/* /etc/ansible/facts.d/
+
+cat ../facts_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in yaml indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: where our play will run and options it will run with
+    hosts: all
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    tasks:
+        - name: Show IP Address
+          debug:
+            msg: "{{ ansible_default_ipv4.address }}"
+
+        - name: Show Custom Fact 1
+          debug:
+            msg: "{{ ansible_local.getdate1.date }}"
+
+        - name: Show Custom Fact 2
+          debug:
+            msg: "{{ ansible_local.getdate2.date.date }}"
+
+# Three dots indicate the end of a YAML document
+...
+
+$ ansible ubuntu-c -m setup
+
+tee is a tool that gets standard output and you can save it somewhere
+$ ansible ubuntu-c -m setup | tee /tmp/x
+
+Now run (-l is to limit hosts to ubuntu-c):
+$ ansible-playbook facts_playbook.yaml -l ubuntu-c
+
+We also can filter:
+$ ansible ubuntu-c -m setup -a 'filter=ansible_local'
+
+Next version:
+$ cd ../04
+$ cat facts_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in yaml indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: where our play will run and options it will run with
+    hosts: all
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    tasks:
+        - name: Show IP Address
+          debug:
+            msg: "{{ ansible_default_ipv4.address }}"
+
+        - name: Show Custom Fact 1
+          debug:
+            msg: "{{ ansible_local.getdate1.date }}"
+
+        - name: Show Custom Fact 2
+          debug:
+            msg: "{{ ansible_local.getdate2.date.date }}"
+
+        - name: Show Custom Fact 1 in hostvars
+          debug:
+            msg: "{{ hostvars[ansible_hostname].ansible_local.getdate1.date }}"
+
+        - name: Show Custom Fact 2 in hostvars
+          debug:
+            msg: "{{ hostvars[ansible_hostname].ansible_local.getdate2.date.date }}"
+
+# Three dots indicate the end of a YAML document
+...
+
+Now we can run:
+$ ansible-playbook facts_playbook.yaml
+
+Next version:
+$ cd ../05
+$ cat facts_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in yaml indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: where our play will run and options it will run with
+    hosts: linux
+
+    # Task: The list of tasks that will be executed within the play, this section
+    # can also be used for pre and post tasks
+    tasks:
+        - name: Make Facts Dir
+          file:
+            path: /etc/ansible/facts.d
+            recurse: yes
+            state: directory
+
+        - name: Copy Custom Fact 1
+          copy:
+            src: /etc/ansible/facts.d/getdate1.fact
+            dest: /etc/ansible/facts.d/getdate1.fact
+            mode: 0755
+
+        - name: Copy Custom Fact 2
+          copy:
+            src: /etc/ansible/facts.d/getdate2.fact
+            dest: /etc/ansible/facts.d/getdate2.fact
+            mode: 0755
+
+        - name: Refresh facts
+          setup:
+
+        - name: Show IP Address
+          debug:
+            msg: "{{ ansible_default_ipv4.address }}"
+
+        - name: Show Custom Fact 1
+          debug:
+            msg: "{{ ansible_local.getdate1.date }}"
+
+        - name: Show Custom Fact 2
+          debug:
+            msg: "{{ ansible_local.getdate2.date.date }}"
+
+        - name: Show Custom Fact 1 in hostvars
+          debug:
+            msg: "{{ hostvars[ansible_hostname].ansible_local.getdate1.date }}"
+
+        - name: Show Custom Fact 2 in hostvars
+          debug:
+            msg: "{{ hostvars[ansible_hostname].ansible_local.getdate2.date.date }}"
+
+# Three dots indicate the end of a YAML document
+...
+
+$ ansible-playbook facts_playbook.yaml
+
+Nice!

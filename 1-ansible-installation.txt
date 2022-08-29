@@ -1,0 +1,12 @@
+To verify whether pip is already installed for your preferred Python:
+$ python3 -m pip -V
+
+To install ansible via pip you can write:
+$ pip install ansible
+or for specific version
+$ pip install ansible==2.9.10
+
+Or as it is said in Ansible documentations:
+$ python3 -m pip install --user ansible
+or for specific version
+$ python3 -m pip install --user ansible-core==2.12.3

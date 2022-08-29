@@ -1,0 +1,606 @@
+$ cd revisions/01_05_playbooks_variables
+
+Let's go to the first version:
+$ cd 01
+
+$ cat variables_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: Where our play will run and options it will run with
+    hosts: centos1
+    gather_facts: false
+
+    # Variable: variables that will apply to the play, on all target systems
+    vars:
+        example_key: example value
+    
+    # Task: The list of tasks that will be executed within the playbook
+    tasks:
+        - name: Test dictionary key value
+          debug:
+            msg: "{{ example_key }}"
+# Three dots indicate the end of YAML document
+...
+
+if you don't want cowsay to be shown:
+$ export ANSIBLE_NOCOWS=1
+
+Next version:
+$ cd ../02
+$ cat variables_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: Where our play will run and options it will run with
+    hosts: centos1
+    gather_facts: false
+
+    # Variable: variables that will apply to the play, on all target systems
+    vars:
+        dict:
+            dict_key: This is a dictionary value
+    
+    # Task: The list of tasks that will be executed within the playbook
+    tasks:
+        - name: Test named dictionary dictionary
+          debug:
+            msg: "{{ dict }}"
+
+        - name: Test named dictionary dictionary key value with dictionary dot notation
+          debug:
+            msg: "{{ dict.dict_key }}"
+
+        - name: Test named dictionary dictionary key value with python brackets notation
+          debug:
+            msg: "{{ dict['dict_key'] }}"
+# Three dots indicate the end of YAML document
+...
+
+$ ansible-playbook variables_playbook.yaml
+
+Next version:
+$ cd ../03
+$ cat variables_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: Where our play will run and options it will run with
+    hosts: centos1
+    gather_facts: false
+
+    # Variable: variables that will apply to the play, on all target systems
+    vars:
+        inline_dict:
+            {inline_dict_key: This is an inline dictionary value}
+    
+    # Task: The list of tasks that will be executed within the playbook
+    tasks:
+        - name: Test named inline dictionary dictionary
+          debug:
+            msg: "{{ inline_dict }}"
+
+        - name: Test named inline dictionary dictionary key value with dictionary dot notation
+          debug:
+            msg: "{{ inline_dict.inline_dict_key }}"
+
+        - name: Test named inline dictionary dictionary key value with python brackets notation
+          debug:
+            msg: "{{ inline_dict['inline_dict_key'] }}"
+# Three dots indicate the end of YAML document
+...
+
+$ ansible-playbook variables_playbook.yaml
+
+Next version:
+$ cd ../04
+
+$ cat variables_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: Where our play will run and options it will run with
+    hosts: centos1
+    gather_facts: false
+
+    # Variable: variables that will apply to the play, on all target systems
+    vars:
+        named_list:
+            - item1
+            - item2
+            - item3
+            - item4
+    
+    # Task: The list of tasks that will be executed within the playbook
+    tasks:
+        - name: Test named list
+          debug:
+            msg: "{{ named_list }}"
+
+        - name: Test named list first item dot notation
+          debug:
+            msg: "{{ named_list.0 }}"
+
+        - name: Test named list first item brackets notation
+          debug:
+            msg: "{{ named_list[0] }}"
+# Three dots indicate the end of YAML document
+...
+
+$ ansible-playbook variables_playbook.yaml
+
+Next version:
+$ cd ../05
+$ cat variables_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: Where our play will run and options it will run with
+    hosts: centos1
+    gather_facts: false
+
+    # Variable: variables that will apply to the play, on all target systems
+    vars:
+        inline_named_list: [item1, item2, item3, item4]
+    
+    # Task: The list of tasks that will be executed within the playbook
+    tasks:
+        - name: Test inline named list
+          debug:
+            msg: "{{ inline_named_list }}"
+
+        - name: Test inline named list first item dot notation
+          debug:
+            msg: "{{ inline_named_list.0 }}"
+
+        - name: Test inline named list first item brackets notation
+          debug:
+            msg: "{{ inline_named_list[0] }}"
+# Three dots indicate the end of YAML document
+...
+
+$ ansible-playbook variables_playbook.yaml
+
+Next version:
+$ cd ../06
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: Where our play will run and options it will run with
+    hosts: centos1
+    gather_facts: false
+
+    # Variable: variables that will apply to the play, on all target systems
+    vars_files:
+        - external_vars.yaml
+    
+    # Task: The list of tasks that will be executed within the playbook
+    tasks:
+        - name: Test external dictionary key value
+          debug:
+            msg: "{{ external_example_key }}"
+
+        - name: Test external named dictionary dictionary
+          debug:
+            msg: "{{ external_dict }}"
+
+        - name: Test external named dictionary dictionary key value with dictionary dot notation
+          debug:
+            msg: "{{ external_dict.dict_key }}"
+
+        # And so on ...
+# Three dots indicate the end of YAML document
+...
+
+$ cat external_vars.yaml
+
+---
+external_example_key: example value
+
+external_dict:
+    dict_key: This is a dictionary value
+
+# And so on an so forth
+...
+
+$ ansible-playbook variables_playbook.yaml
+
+Next version:
+$ cd ../07
+$ cat variables_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: Where our play will run and options it will run with
+    hosts: centos1
+
+    # Variable: variables that will apply to the play, on all target systems
+    vars_prompt:
+        - name: username
+        - private: false
+    
+    # Task: The list of tasks that will be executed within the playbook
+    tasks:
+        - name: Test vars_prompt
+          debug:
+            msg: "{{ username }}"
+
+# Three dots indicate the end of YAML document
+...
+
+$ ansible-playbook variables_playbook.yaml
+
+Next version:
+$ cd ../08
+$ cat variables_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: Where our play will run and options it will run with
+    hosts: centos1
+    gather_facts: false
+
+    # Variable: variables that will apply to the play, on all target systems
+    vars_prompt:
+        - name: password
+        - private: true
+    
+    # Task: The list of tasks that will be executed within the playbook
+    tasks:
+        - name: Test vars_prompt
+          debug:
+            msg: "{{ password }}"
+
+# Three dots indicate the end of YAML document
+...
+
+$ ansible-playbook variables_playbook.yaml
+
+Next version:
+$ cd ../09
+$ cat variables_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: Where our play will run and options it will run with
+    hosts: centos1
+    gather_facts: true
+
+    # Variable: variables that will apply to the play, on all target systems
+    
+    # Task: The list of tasks that will be executed within the playbook
+    tasks:
+        - name: Test host_vars with an ansible fact and collect ansible_port, dot notation
+          debug:
+            msg: "{{ host_vars[ansible_hostname].ansible_port }}"
+
+    tasks:
+        - name: Test host_vars with an ansible fact and collect ansible_port, dict notation
+          debug:
+            msg: "{{ host_vars[ansible_hostname]['ansible_port'] }}"
+
+# Three dots indicate the end of YAML document
+...
+
+host_vars is for situations where the variable is defined in hosts for a specific host
+
+for example in hosts:
+centos1 ansible_port=2222
+
+group_vars is for situations where the variable is defined in hosts for a specific group
+
+for example in hosts:
+[centos:vars]
+ansible_user=root
+
+$ ansible-playbook variables_playbook.yaml
+
+Next version:
+$ cd ../10
+$ cat variables_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: Where our play will run and options it will run with
+    hosts: centos
+    gather_facts: true
+
+    # Variable: variables that will apply to the play, on all target systems
+    
+    # Task: The list of tasks that will be executed within the playbook
+    tasks:
+        - name: Test host_vars with an ansible fact and collect ansible_port, dot notation
+          debug:
+            msg: "{{ host_vars[ansible_hostname].ansible_port }}"
+
+    tasks:
+        - name: Test host_vars with an ansible fact and collect ansible_port, dict notation
+          debug:
+            msg: "{{ host_vars[ansible_hostname]['ansible_port'] }}"
+
+# Three dots indicate the end of YAML document
+...
+
+$ ansible-playbook variables_playbook.yaml
+
+Next version:
+$ cd ../11
+$ cat variables_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: Where our play will run and options it will run with
+    hosts: centos
+    gather_facts: true
+
+    # Variable: variables that will apply to the play, on all target systems
+    
+    # Task: The list of tasks that will be executed within the playbook
+    tasks:
+        - name: Test host_vars with an ansible fact and collect ansible_port, dot notation
+          debug:
+            msg: "{{ host_vars[ansible_hostname].ansible_port | default('22') }}"
+
+    tasks:
+        - name: Test host_vars with an ansible fact and collect ansible_port, dict notation
+          debug:
+            msg: "{{ host_vars[ansible_hostname]['ansible_port'] | default('22') }}"
+
+# Three dots indicate the end of YAML document
+...
+
+| default() filter checks if the variable before it is undefined then default is applied
+
+$ ansible-playbook variables_playbook.yaml
+
+Next version:
+$ cd ../12
+$ cat variables_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: Where our play will run and options it will run with
+    hosts: centos
+    gather_facts: true
+
+    # Variable: variables that will apply to the play, on all target systems
+    
+    # Task: The list of tasks that will be executed within the playbook
+    tasks:
+        - name: Test group_vars
+          debug:
+            msg: "{{ ansible_user }}"
+
+
+# Three dots indicate the end of YAML document
+...
+
+For group_vars there is no need to give extra things like ansible_hostname and so we can 
+use it in a simple way
+
+$ ansible-playbook variables_playbook.yaml
+
+Next version:
+$ cd ../13
+$ cat variables_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: Where our play will run and options it will run with
+    hosts: linux
+    gather_facts: true
+
+    # Variable: variables that will apply to the play, on all target systems
+    
+    # Task: The list of tasks that will be executed within the playbook
+    tasks:
+        - name: Test group_vars
+          debug:
+            msg: "{{ ansible_user }}"
+
+
+# Three dots indicate the end of YAML document
+...
+
+$ ansible-playbook variables_playbook.yaml
+
+Next version:
+$ cd ../14
+$ cat variables_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: Where our play will run and options it will run with
+    hosts: centos1
+    gather_facts: true
+
+    # Variable: variables that will apply to the play, on all target systems
+    
+    # Task: The list of tasks that will be executed within the playbook
+    tasks:
+        - name: Test group_vars with an ansible fact, show that the variable is also accessible from the host_vars section
+          debug:
+            msg: "{{ hostvars[ansible_hostname].ansible_user }}"
+
+
+# Three dots indicate the end of YAML document
+...
+
+$ ansible-playbook variables_playbook.yaml
+
+Next version:
+$ cd ../15
+
+Here there is two extra directories that has been created as host_vars and group_vars
+variables with YAML format can be written in a file and located inside each directories
+
+$ cat variables_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: Where our play will run and options it will run with
+    hosts: linux
+    gather_facts: true
+
+    # Variable: variables that will apply to the play, on all target systems
+    
+    # Task: The list of tasks that will be executed within the playbook
+    tasks:
+        - name: Test hostvars with an ansible fact and collect ansible_port, dot notation
+          debug:
+            msg: "{{ hostvars[ansible_hostname].ansible_user | default('22') }}"
+
+        - name: Test groupvars
+          debug:
+            msg: "{{ ansible_user }}"
+
+
+# Three dots indicate the end of YAML document
+...
+
+$ ansible-playbook variables_playbook.yaml
+
+Next version:
+$ cd ../16
+$ cat variables_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: Where our play will run and options it will run with
+    hosts: centos1
+    gather_facts: true
+
+    # Variable: variables that will apply to the play, on all target systems
+    
+    # Task: The list of tasks that will be executed within the playbook
+    tasks:
+        - name: Test extra vars
+          debug:
+            msg: "{{ extra_vars_key }}"
+
+# Three dots indicate the end of YAML document
+...
+
+$ ansible-playbook variables_playbook.yaml -e 'extra_vars_key="Some extra value"'
+
+OR We can define key in json way
+
+$ ansible-playbook variables_playbook.yaml -e '{"extra_vars_key":"Some extra value in json format"}'
+
+OR We can define key in yaml way
+
+$ ansible-playbook variables_playbook.yaml -e '{extra_vars_key: Some extra value in yaml format}'
+
+Next version:
+$ cd ../17
+$ cat variables_playbook.yaml
+
+---
+# YAML documents begin with the document seperator ---
+
+# The minus in YAML indicates a list of items. The playbook contains a list
+# of plays, with each play being a dictionary
+-
+
+    # Target: Where our play will run and options it will run with
+    hosts: centos1
+
+    # Variable: variables that will apply to the play, on all target systems
+    
+    # Task: The list of tasks that will be executed within the playbook
+    tasks:
+        - name: Test extra vars
+          debug:
+            msg: "{{ extra_vars_key }}"
+
+# Three dots indicate the end of YAML document
+...
+
+extra_vars_file.json or extra_vars_file.yaml can be passed instead of inline extra
+variable parameter
+
+$ ansible-playbook variables_playbook.yaml -e @extra_vars_file.json
+
+@ means that it is a file that we try to import
+
+Nice!
